@@ -27,16 +27,23 @@ class BooksApp extends React.Component {
   }
 
   moveShelf = (book, newShelf) => {
-    BooksAPI.update(book, newShelf).then((res) => {
-      let booksCopy = [...this.state.books];
-      let replaceIndex = booksCopy.findIndex(b => b.id === book.id);
-      let bookCopy = { ...booksCopy[replaceIndex] };
-      bookCopy.shelf = newShelf;
-      booksCopy[replaceIndex] = bookCopy;
-      this.setState(() => ({
-        books: booksCopy
+    if (this.state.books.find((b) => b.id === book.id)) {
+      BooksAPI.update(book, newShelf).then((res) => {
+        let booksCopy = [...this.state.books];
+        let replaceIndex = booksCopy.findIndex(b => b.id === book.id);
+        let bookCopy = { ...booksCopy[replaceIndex] };
+        bookCopy.shelf = newShelf;
+        booksCopy[replaceIndex] = bookCopy;
+        this.setState(() => ({
+          books: booksCopy
+        }))
+      })
+    } else {
+      book.shelf = newShelf;
+      this.setState((currentState) => ({
+        books: currentState.books.concat(book)
       }))
-    })
+    }
   }
 
   constructor(props) {
@@ -50,28 +57,28 @@ class BooksApp extends React.Component {
   render() {
     return (
       <div className="app">
-        <Route exact path='/' render= {() => (
+        <Route exact path='/' render={() => (
           <div className="list-books">
-                <div className="list-books-title">
-                    <h1>MyReads</h1>
-                </div>
-                <div className="list-books-content">
-                    <div>
-                        <ListShelves shelves={this.state.shelves} books={this.state.books} onMoveShelf={(book, newShelf) => {
-                            this.moveShelf(book, newShelf)
-                        }} />
-                    </div>
-                </div>
-                <div className="open-search">
-                    <Link to='/search'>
-                        <button>Add a book</button>
-                    </Link>
-                </div>
+            <div className="list-books-title">
+              <h1>MyReads</h1>
             </div>
-        )}/>
+            <div className="list-books-content">
+              <div>
+                <ListShelves shelves={this.state.shelves} books={this.state.books} onMoveShelf={(book, newShelf) => {
+                  this.moveShelf(book, newShelf)
+                }} />
+              </div>
+            </div>
+            <div className="open-search">
+              <Link to='/search'>
+                <button>Add a book</button>
+              </Link>
+            </div>
+          </div>
+        )} />
         <Route path='/search' render={() => (
-          <SearchPage library={this.state.books} moveShelf={this.moveShelf}/>
-        )}/>
+          <SearchPage library={this.state.books} moveShelf={this.moveShelf} />
+        )} />
       </div>
     )
   }
