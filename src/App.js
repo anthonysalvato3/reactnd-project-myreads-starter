@@ -81,15 +81,16 @@ class BooksApp extends React.Component {
   }
 
   moveShelf = (book, newShelf) => {
-    let booksCopy = [...this.state.books];
-    let replaceIndex = booksCopy.findIndex(b => b.id === book.id);
-    let bookCopy = { ...booksCopy[replaceIndex] };
-    bookCopy.shelf = newShelf;
-    // booksCopy[book.id] = bookCopy;
-    booksCopy[replaceIndex] = bookCopy;
-    this.setState(() => ({
-      books: booksCopy
-    }))
+    BooksAPI.update(book, newShelf).then((res) => {
+      let booksCopy = [...this.state.books];
+      let replaceIndex = booksCopy.findIndex(b => b.id === book.id);
+      let bookCopy = { ...booksCopy[replaceIndex] };
+      bookCopy.shelf = newShelf;
+      booksCopy[replaceIndex] = bookCopy;
+      this.setState(() => ({
+        books: booksCopy
+      }))
+    })
   }
 
   constructor(props) {
