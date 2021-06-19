@@ -3,19 +3,20 @@ import ListBooks from "./ListBooks";
 
 class ListShelves extends Component {
     render() {
-        const { shelves, books } = this.props
+        const { shelves, books, onMoveShelf } = this.props
         return (
             <ol>
                 {shelves.map((shelf) => (
-                    <li>
+                    <li key={shelf.id}>
                         <div className="bookshelf">
-                            <h2 className="bookshelf-title">
-                                {shelf}
+                            <h2 className="bookshelf-title">{shelf.name}</h2>
+                            <div className="bookshelf-books">
                                 <ListBooks books={books.filter((book) => (
-                                    book.shelf === shelf
+                                    book.shelf === shelf.id
                                 ))}
+                                onMoveShelf = {onMoveShelf}
                                 />
-                            </h2>
+                            </div>
                         </div>
                     </li>
                 ))}
