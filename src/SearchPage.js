@@ -1,25 +1,27 @@
 import React, { Component } from "react";
 import ListBooks from "./ListBooks";
 import * as BooksAPI from "./BooksAPI"
+import { Link } from 'react-router-dom'
 
 class SearchPage extends Component {
     state = {
-        library: this.props.library,
         query: '',
         result: []
     }
-    updateQuery = (query) => {
+    updateQuery = (newQuery) => {
         this.setState(() => ({
-            query: query.trim()
+            query: newQuery
         }))
-        this.getResult(query).then((books) => {
+        this.getResult(newQuery).then((books) => {
             this.setState(() => {
                 const mergedBooks = []
-                books.forEach((book) => {
-                    let libraryBook = this.state.library.find(b => b.id === book.id)
-                    libraryBook ? mergedBooks.push(libraryBook) : mergedBooks.push(book)
-                })
-                return {result: mergedBooks}
+                if (books && !books.error) {
+                    books.forEach((book) => {
+                        let libraryBook = this.props.library.find(b => b.id === book.id)
+                        libraryBook ? mergedBooks.push(libraryBook) : mergedBooks.push(book)
+                    })
+                }
+                return { result: mergedBooks }
             })
         })
     }
@@ -27,12 +29,14 @@ class SearchPage extends Component {
         return BooksAPI.search(query)
     }
     render() {
-        const { library, query, result } = this.state
+        const { query, result } = this.state
         const { moveShelf } = this.props
         return (
             <div className="search-books">
                 <div className="search-books-bar">
-                    <button className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</button>
+                    <Link to='/'>
+                        <button className="close-search">Close</button>
+                    </Link>
                     <div className="search-books-input-wrapper">
                         {/*
                   NOTES: The search from BooksAPI is limited to a particular set of search terms.
