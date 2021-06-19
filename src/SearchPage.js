@@ -4,6 +4,7 @@ import * as BooksAPI from "./BooksAPI"
 
 class SearchPage extends Component {
     state = {
+        library: this.props.library,
         query: '',
         result: []
     }
@@ -12,17 +13,21 @@ class SearchPage extends Component {
             query: query.trim()
         }))
         this.getResult(query).then((books) => {
-            this.setState(() => ({
-                result: books
-            }))
+            this.setState(() => {
+                const mergedBooks = []
+                books.forEach((book) => {
+                    let libraryBook = this.state.library.find(b => b.id === book.id)
+                    libraryBook ? mergedBooks.push(libraryBook) : mergedBooks.push(book)
+                })
+                return {result: mergedBooks}
+            })
         })
-        // console.log(this.state.result)
     }
     getResult = (query) => {
         return BooksAPI.search(query)
     }
     render() {
-        const { query, result } = this.state
+        const { library, query, result } = this.state
         const { moveShelf } = this.props
         return (
             <div className="search-books">

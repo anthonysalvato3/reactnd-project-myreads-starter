@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 
 class BookshelfChanger extends Component {
-    // state = {
-    //     currentShelf: this.props.book.shelf
-    // }
-    // moveShelf(newShelf) {
-    //     this.setState(() => ({
-    //         currentShelf: newShelf
-    //     }))
-    // }
     render() {
         const { book, onMoveShelf } = this.props
         return (
