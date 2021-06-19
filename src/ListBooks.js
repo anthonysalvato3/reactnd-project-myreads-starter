@@ -6,7 +6,7 @@ class ListBooks extends Component {
         const { books, onMoveShelf } = this.props
         return (
             <ol className="books-grid">
-                {books.map((book) => (
+                {books && books.map((book) => (
                     <li key={book.id}>
                         <div className="book">
                             <div className="book-top">
@@ -14,7 +14,7 @@ class ListBooks extends Component {
                                 <BookshelfChanger book={book} onMoveShelf={onMoveShelf} />
                             </div>
                             <div className="book-title">{book.title}</div>
-                            <div className="book-authors">{book.author}</div>
+                            <div className="book-authors">{book.authors && book.authors.join(", ")}</div>
                         </div>
                     </li>
                 ))}
